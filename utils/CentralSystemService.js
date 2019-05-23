@@ -8,7 +8,7 @@ var CentralSystemService = {
                 args.chargeBoxIdentity = headers.chargeBoxIdentity;
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
                 handlers.Authorize.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             BootNotification: function(args, callback, headers, req) {
@@ -27,7 +27,7 @@ var CentralSystemService = {
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
 
                 handlers.StartTransaction.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             StopTransaction: function(args, callback, headers, req) {
@@ -36,12 +36,15 @@ var CentralSystemService = {
                 args.endpoint =  Utils.getRemoteAddress(req.connection.remoteAddress);
 
                 handlers.StopTransaction.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             Heartbeat: function(args, callback, headers, req) {
-                handlers.Heartbeat.handle().then(function(data) {
-                    callback(data);
+                args = {chargeBoxIdentity : undefined, endpoint : undefined}
+                args.chargeBoxIdentity = headers.chargeBoxIdentity;
+                args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
+                handlers.Heartbeat.handle(args).then(function(data) {
+                    callback(null, data);
                 });
             },
             MeterValues: function(args, callback, headers, req) {
@@ -49,7 +52,7 @@ var CentralSystemService = {
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
 
                 handlers.MeterValues.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             StatusNotification: function(args, callback, headers, req) {
@@ -60,7 +63,7 @@ var CentralSystemService = {
                 handlers.StatusNotification.handle(args).then(function(data) {
                   data = data || {}
                   console.log('[SOAPWrapper] StatusNotification result: ' + JSON.stringify(data));
-                  callback(data);
+                  callback(null, data);
                 });
             },
             FirmwareStatusNotification: function(args, callback, headers, req) {
@@ -68,7 +71,7 @@ var CentralSystemService = {
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
 
                 handlers.FirmwareStatusNotification.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             DiagnosticsStatusNotification: function(args, callback, headers, req) {
@@ -76,7 +79,7 @@ var CentralSystemService = {
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
 
                 handlers.DiagnosticsStatusNotification.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             },
             DataTransfer: function(args, callback, headers, req) {
@@ -84,7 +87,7 @@ var CentralSystemService = {
                 args.endpoint = Utils.getEndpoint(headers.From.Address, req.connection.remoteAddress);
 
                 handlers.DataTransfer.handle(args).then(function(data) {
-                    callback(data);
+                    callback(null, data);
                 });
             }
         }
