@@ -85,7 +85,7 @@ class SOAPWrapper {
 
         if (this.log) {
             var prettyData = require('pretty-data').pd;
-
+/*
             this.soapServer.log = function(type, data) {
                 // type is 'received' or 'replied'
                 var output;
@@ -100,7 +100,7 @@ class SOAPWrapper {
                 require('fs').appendFile(require('path').resolve(__dirname, '../logs/soap.log'), message, function (err) {
                   if (err) throw err;
                 });
-            };
+            };*/
         }
 
         return this.soapServer;
