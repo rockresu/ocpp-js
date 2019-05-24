@@ -34,6 +34,7 @@
     "pretty-data": "^0.40.0",
     "promise": "^7.1.1",
     "request": "^2.79.0",
+    "rxjs": "^6.5.2",
     "soap": "^0.18.0",
     "strong-soap": "^1.2.0",
     "uuid-js": "^0.7.5"
