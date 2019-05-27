@@ -75,9 +75,6 @@ class SOAPWrapper {
         server.listen(this.port, function() {
             console.log(self._log() + ' ' + name + ' Server is listening on port ' + self.port);
             var message = '/***********************************************************************/' + require("os").EOL;
-            require('fs').appendFile(require('path').resolve(__dirname, '../logs/soap.log'), message, function (err) {
-              if (err) throw err;
-            });
         });
 
         // SOAP Server listener
