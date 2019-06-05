@@ -4,16 +4,16 @@ const ip = require('ip');
 const UUID = require('uuid-js');
 
 class CentralSystem{
-    constructor(port) {
+    constructor(port, path, userCallbacks) {
         this.soapWrapper = new SOAPWrapper(port, true);
         var self = this;
         this.port = port;
         this.ip = ip.address();
         this.clients = [];
 
-        this.soapWrapper.createCentralSystemServer();
+        this.soapWrapper.createCentralSystemServer(port, path, userCallbacks);
 
-        console.log(`[CentralSystem] Server IP: ${self.ip}`);
+        console.log(`[CentralSystem] Server IP: ${self.ip}` + path);
     }
 
     createChargeBoxClient(station, callback){
@@ -127,13 +127,13 @@ class CentralSystem{
     remoteStartTransaction(stationId, remoteAddress, data){
       this.action = '/RemoteStartTransaction';
 
-      this._updateSoapHeaders(stationId, remoteAddress);
+      let chargePointClient = this._updateSoapHeaders(stationId, remoteAddress);
 
       var request = {
         remoteStartTransactionRequest: data
       }
 
-      this.chargePointClient.RemoteStartTransaction(request, function(result){
+      chargePointClient.RemoteStartTransaction(request, function(result){
         console.log(JSON.stringify(result));
       });
     }
@@ -141,13 +141,13 @@ class CentralSystem{
     remoteStopTransaction(stationId, remoteAddress, data){
       this.action = '/RemoteStopTransaction';
 
-      this._updateSoapHeaders(stationId);
+      let chargePointClient = this._updateSoapHeaders(stationId, remoteAddress);
 
       var request = {
         remoteStopTransactionRequest: data
       }
-
-      this.chargePointClient.RemoteStopTransaction(request, function(result){
+      
+      chargePointClient.RemoteStopTransaction(request, function(result){
         console.log(JSON.stringify(result));
       });
     }
@@ -297,9 +297,6 @@ class CentralSystem{
         console.log(`Remote Address: ${remoteAddress}`);
         console.log(`Action: ${this.action}`);
 
-        var to = remoteAddress || 'http://192.168.0.114:8081';
-        //var to = 'http://127.0.0.1:8081/ChargeBox/Ocpp';
-
         // Generate a V4 UUID
         var uuid4 = UUID.create();
 
@@ -307,8 +304,10 @@ class CentralSystem{
         soapClient.addSoapHeader('<a:MessageID>urn:uuid:' + uuid4 + '</a:MessageID>')
         soapClient.addSoapHeader('<a:From><a:Address>http://localhost:9220/Ocpp/CentralSystemService</a:Address></a:From>')
         soapClient.addSoapHeader('<a:ReplyTo><a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address></a:ReplyTo>')
-        soapClient.addSoapHeader('<a:To>'+ to + '</a:To>')
+        soapClient.addSoapHeader('<a:To>'+ remoteAddress + '</a:To>')
         soapClient.addSoapHeader('<a:Action soap:mustUnderstand="1">'+ this.action +'</a:Action>')
+
+        return soapClient
       }else{
         console.log(`[SOAP Headers] Client for ${remoteAddress} is not found !`);
         return;
