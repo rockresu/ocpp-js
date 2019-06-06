@@ -21,7 +21,7 @@ class File {
                 });
             });
         } catch(e){
-            pass
+
         }        
   }
 
